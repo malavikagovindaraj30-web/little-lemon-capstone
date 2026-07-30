@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 
-function BookingForm() {
+function BookingForm({ availableTimes, dispatch }) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('17:00');
   const [guests, setGuests] = useState(1);
   const [occasion, setOccasion] = useState('Birthday');
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value);
+    if (dispatch) dispatch({ type: 'UPDATE_TIMES', payload: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,19 +17,17 @@ function BookingForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'grid', maxWidth: '300px', gap: '20px', margin: '20px auto' }}>
-      <h2>Little Lemon Table Reservation</h2>
+    <form onSubmit={handleSubmit} aria-label="Booking Form" style={{ display: 'grid', maxWidth: '300px', gap: '20px', margin: '20px auto' }}>
+      <h2>Little Lemon Reservation</h2>
       
       <label htmlFor="res-date">Choose date</label>
-      <input type="date" id="res-date" value={date} onChange={(e) => setDate(e.target.value)} required />
+      <input type="date" id="res-date" value={date} onChange={handleDateChange} required aria-required="true" />
 
       <label htmlFor="res-time">Choose time</label>
-      <select id="res-time" value={time} onChange={(e) => setTime(e.target.value)}>
-        <option>17:00</option>
-        <option>18:00</option>
-        <option>19:00</option>
-        <option>20:00</option>
-        <option>21:00</option>
+      <select id="res-time" value={time} onChange={(e) => setTime(e.target.value)} required>
+        {availableTimes && availableTimes.map((t) => (
+          <option key={t}>{t}</option>
+        ))}
       </select>
 
       <label htmlFor="guests">Number of guests</label>
@@ -36,7 +39,7 @@ function BookingForm() {
         <option>Anniversary</option>
       </select>
 
-      <input type="submit" value="Make Your reservation" style={{ padding: '10px', background: '#f4ce14', border: 'none', cursor: 'pointer' }} />
+      <input type="submit" value="Make Your reservation" aria-label="On Click" style={{ padding: '10px', background: '#f4ce14', cursor: 'pointer' }} />
     </form>
   );
 }
